@@ -1,0 +1,42 @@
+[
+    {
+        "role": "user",
+        "content": "FORESIGHT ALLIANCE, 2014. Brands 2030: Ten forecasts on the future of brands and branding [online]. Washington. [Zugriff am: 6 Juni 2022]. Verfügbar unter: https://www.foresightalliance.com/2014/08/04/the-ai-brand/\n\nFUEGLISTALLER, Urs, Alexander FUST, Christoph MÜLLER, Susan MÜLLER und Thomas ZELLWEGER, 2019. Entrepreneurship: Modelle – Umsetzung – Perspektiven Mit Fallbeispielen aus Deutschland, Österreich und der Schweiz. 5. Auflage. Wiesbaden: Springer Gabler"
+    },
+    {
+        "role": "assistant",
+        "content": "```tex\n@misc{foresightalliance2014brands,\n  title = {{Brands 2030: Ten Forecasts on the Future of Brands and Branding}},\n  year = {2014},\n  howpublished = {online},\n  address = {Washington},\n  url = {https://www.foresightalliance.com/2014/08/04/the-ai-brand/},\n  urldate = {2022-06-06}\n}\n\n@book{fueglistaller2019entrepreneurship,\n  author = {Fueglistaller, Urs and Fust, Alexander and Müller, Christoph and Müller, Susan and Zellweger, Thomas},\n  year = {2019},\n  title = {Entrepreneurship: Modelle -- Umsetzung -- Perspektiven Mit Fallbeispielen aus Deutschland, Österreich und der Schweiz},\n  edition = {5},\n  publisher = {Springer Gabler},\n  address = {Wiesbaden}\n}\n```"
+    },
+    {
+        "role": "user",
+        "content": "Scherer, R. F., Brodzinski, J. D., & Wiebe, F. A. 1990. Entrepreneur career selection and gender: A socialization approach. Journal of small business management, 28(2): 37.\nSchilke, O. 2014. On the contingent value of dynamic capabilities for competitive advantage: The nonlinear moderating effect of environmental dynamism. Strategic Management Journal, 35(2): 179-203.\n"
+    },
+    {
+        "role": "assistant",
+        "content": "```tex\n@article{scherer1990entrepreneur,\n  author = {Scherer, Robert F. and Brodzinski, James D. and Wiebe, Frank A.},\n  year = {1990},\n  title = {Entrepreneur Career Selection and Gender: A Socialization Approach},\n  journal = {Journal of Small Business Management},\n  volume = {28},\n  number = {2},\n  pages = {37}\n}\n\n@article{schilke2014contingent,\n  author = {Schilke, Oliver},\n  year = {2014},\n  title = {On the Contingent Value of Dynamic Capabilities for Competitive Advantage: The Nonlinear Moderating Effect of Environmental Dynamism},\n  journal = {Strategic Management Journal},\n  volume = {35},\n  number = {2},\n  pages = {179-203}\n}\n```"
+    },
+    {
+        "role": "user",
+        "content": "Schilke, O., Hu, S., & Helfat, C. E. 2018. Quo Vadis, Dynamic Capabilities? A Content-Analytic Review of the Current State of Knowledge and Recommendations for Future Research. Academy of Management Annals, 12(1): 390-439.\nSchreyögg, G., & Kliesch-Eberl, M. 2007. How dynamic can organizational capabilities be? Towards a dual-process model of capability dynamization. Strategic Management Journal, 28(9): 913-933.\n"
+    },
+    {
+        "role": "assistant",
+        "content": "```tex\n@article{schilke2018quo,\n  author = {Schilke, Oliver and Hu, Sijing and Helfat, Constance E.},\n  year = {2018},\n  title = {Quo Vadis, Dynamic Capabilities? A Content-Analytic Review of the Current State of Knowledge and Recommendations for Future Research},\n  journal = {Academy of Management Annals},\n  volume = {12},\n  number = {1},\n  pages = {390-439}\n}\n\n@article{schreyogg2007dynamic,\n  author = {Schreyögg, Georg and Kliesch-Eberl, Martina},\n  year = {2007},\n  title = {How Dynamic Can Organizational Capabilities Be? Towards a Dual-Process Model of Capability Dynamization},\n  journal = {Strategic Management Journal},\n  volume = {28},\n  number = {9},\n  pages = {913-933}\n}\n```"
+    },
+    {
+        "role": "user",
+        "content": "Scariano, S. M., & Davenport, J. M. 1987. The Effects of Violations of Independence Assumptions in the One-Way ANOVA. The American Statistician, 41(2): 123-129."
+    },
+    {
+        "role": "assistant",
+        "content": "```tex\n@article{scariano1987effects,\n  author = {Scariano, Sean M. and Davenport, John M.},\n  year = {1987},\n  title = {The Effects of Violations of Independence Assumptions in the One-Way ANOVA},\n  journal = {The American Statistician},\n  volume = {41},\n  number = {2},\n  pages = {123-129}\n}\n```"
+    },
+    {
+        "role": "user",
+        "content": "PRILLER, Eckhard, Mareike ALSCHER, Patrick DROSS, Franziska PAUL, Clemens POLDRACK, Claudia SCHMEISSER und Nora WAITKUS, 2012. Dritte-Sektor-Organisationen heute: Eigene Ansprüche und ökonomische Herausforderungen. Berlin: Wissenschaftszentrum Berlin für Sozialforschung Projektgruppe Zivilengagement"
+    },
+    {
+        "role": "assistant",
+        "content": "```tex\n@book{priller2012dritte,\n  author = {Priller, Eckhard and Alsch, Mareike and Dross, Patrick and Paul, Franziska and Poldrack, Clemens and Schmeisser, Claudia and Waitkus, Nora},\n  year = {2012},\n  title = {Dritte-Sektor-Organisationen heute: Eigene Ansprüche und ökonomische Herausforderungen},\n  address = {Berlin},\n  publisher = {Wissenschaftszentrum Berlin für Sozialforschung Projektgruppe Zivilengagement}\n}\n```"
+    }
+]
