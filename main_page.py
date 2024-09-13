@@ -21,6 +21,13 @@ def load_history_from_file(file_name):
             return json.load(f)
     return []
 
+# Function to trim the conversation to avoid exceeding token limits
+def trim_conversation(conversation, max_tokens=1500):
+    total_tokens = sum([len(msg['content'].split()) for msg in conversation])
+    while total_tokens > max_tokens and len(conversation) > 1:
+        total_tokens -= len(conversation.pop(0)['content'].split())
+    return conversation
+
 def main_page():
     st.title('✍ Bibliography Management System')
 
@@ -48,25 +55,36 @@ def main_page():
         st.chat_message("user").markdown(user_prompt)
         st.session_state.chat_history_main.append({"role": "user", "content": user_prompt})
 
+        # Trim conversation history to stay within token limits
+        st.session_state.chat_history_main = trim_conversation(st.session_state.chat_history_main, max_tokens=1500)
+
         # Send user's message to GPT-3.5-turbo and get a response
         setup_openai()
-        response = openai.ChatCompletion.create(
-            model=current_model,
-            messages=[
-                {"role": "system", "content": "You are an assistant trained to convert academic references into BibTeX format."},
-                *st.session_state.chat_history_main
-            ]
-        )
+        try:
+            response = openai.ChatCompletion.create(
+                model=current_model,
+                messages=[
+                    {"role": "system", "content": "You are an assistant trained to convert academic references into BibTeX format."},
+                    *st.session_state.chat_history_main
+                ]
+            )
 
-        assistant_response = response.choices[0].message['content']
-        st.session_state.chat_history_main.append({"role": "assistant", "content": assistant_response})
+            assistant_response = response.choices[0].message['content']
+            st.session_state.chat_history_main.append({"role": "assistant", "content": assistant_response})
 
-        # Display GPT-3.5-turbo's response
-        with st.chat_message("assistant"):
-            st.markdown(assistant_response)
+            # Display GPT-3.5-turbo's response
+            with st.chat_message("assistant"):
+                st.markdown(assistant_response)
 
-        # Save the updated chat history
-        save_history_to_file(st.session_state.chat_history_main, history_file)
+            # Save the updated chat history
+            save_history_to_file(st.session_state.chat_history_main, history_file)
+
+        except openai.error.InvalidRequestError as e:
+            st.error(f"Invalid request error: {e}")
+        except openai.error.OpenAIError as e:
+            st.error(f"OpenAI error: {e}")
+        except Exception as e:
+            st.error(f"Unexpected error: {e}")
 
 if __name__ == "__main__":
     main_page()
