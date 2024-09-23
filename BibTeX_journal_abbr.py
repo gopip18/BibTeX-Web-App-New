@@ -21,12 +21,19 @@ def load_history_from_file(file_name):
             return json.load(f)
     return []
 
+# Function to estimate token count of a message (approximation)
+def estimate_token_count(text):
+    return len(text.split())
+
 # Function to trim the conversation to avoid exceeding token limits
-def trim_conversation(conversation, max_tokens=1500):
-    total_tokens = sum([len(msg['content'].split()) for msg in conversation])
-    while total_tokens > max_tokens and len(conversation) > 1:
-        total_tokens -= len(conversation.pop(0)['content'].split())
-    return conversation
+def trim_conversation(conversation, max_tokens=16000):
+    total_tokens = sum([estimate_token_count(msg['content']) for msg in conversation])
+    trimmed_conversation = conversation[:]
+
+    # Trim older messages only if total tokens exceed max limit
+    while total_tokens > max_tokens and len(trimmed_conversation) > 1:
+        total_tokens -= estimate_token_count(trimmed_conversation.pop(0)['content'])
+    return trimmed_conversation
 
 def main_page_with_abbr():
     st.title('🚀 BibTeX with Journal Abbreviation')
@@ -56,7 +63,7 @@ def main_page_with_abbr():
         st.session_state.chat_history_abbr.append({"role": "user", "content": user_prompt})
 
         # Trim conversation history to stay within token limits
-        st.session_state.chat_history_abbr = trim_conversation(st.session_state.chat_history_abbr, max_tokens=1500)
+        st.session_state.chat_history_abbr = trim_conversation(st.session_state.chat_history_abbr)
 
         # Send user's message to GPT-3.5-turbo and get a response
         setup_openai()
