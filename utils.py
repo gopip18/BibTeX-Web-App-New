@@ -10,4 +10,4 @@ def load_settings():
     if os.path.exists('settings.json'):
         with open('settings.json', 'r', encoding='utf-8') as f:
             return json.load(f)
-    return {"model": "GPT-3.5-Turbo-16k"}
+    return {"model": "GPT-3.5-Turbo"}
