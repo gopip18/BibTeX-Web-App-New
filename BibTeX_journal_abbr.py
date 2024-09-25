@@ -21,12 +21,45 @@ def load_history_from_file(file_name):
             return json.load(f)
     return []
 
+# Function to estimate the token count (average approx: 1 word = 1.33 tokens)
+def estimate_token_count(text):
+    return len(text.split())
+
 # Function to trim the conversation to avoid exceeding token limits
-def trim_conversation(conversation, max_tokens=1500):
-    total_tokens = sum([len(msg['content'].split()) for msg in conversation])
-    while total_tokens > max_tokens and len(conversation) > 1:
-        total_tokens -= len(conversation.pop(0)['content'].split())
-    return conversation
+def trim_conversation(conversation, max_tokens=4000):
+    total_tokens = sum([estimate_token_count(msg['content']) for msg in conversation])
+    trimmed_conversation = conversation[:]
+
+    while total_tokens > max_tokens and len(trimmed_conversation) > 1:
+        total_tokens -= estimate_token_count(trimmed_conversation.pop(0)['content'])
+    return trimmed_conversation
+
+# Function to split a large input into smaller chunks based on a delimiter
+def split_large_input(input_text, delimiter="\n", max_tokens=3000):
+    input_parts = input_text.split(delimiter)
+    chunks = []
+    current_chunk = []
+    current_token_count = 0
+
+    for part in input_parts:
+        part_token_count = estimate_token_count(part)
+        if current_token_count + part_token_count < max_tokens:
+            current_chunk.append(part)
+            current_token_count += part_token_count
+        else:
+            chunks.append(delimiter.join(current_chunk))
+            current_chunk = [part]
+            current_token_count = part_token_count
+
+    # Add any remaining parts as the last chunk
+    if current_chunk:
+        chunks.append(delimiter.join(current_chunk))
+
+    return chunks
+
+# Function to keep only the last 5 messages in chat history
+def keep_last_n_messages(history, n=5):
+    return history[-n:]
 
 def main_page_with_abbr():
     st.title('🚀 BibTeX with Journal Abbreviation')
@@ -42,6 +75,12 @@ def main_page_with_abbr():
     if "chat_history_abbr" not in st.session_state:
         st.session_state.chat_history_abbr = load_history_from_file(history_file)
 
+    # Button to delete all history except the last 5 chats
+    if st.button("Delete All History Except Last 5"):
+        st.session_state.chat_history_abbr = keep_last_n_messages(st.session_state.chat_history_abbr, 5)
+        save_history_to_file(st.session_state.chat_history_abbr, history_file)
+        st.success("Chat history trimmed to the last 5 messages.")
+
     # Display chat history
     for message in st.session_state.chat_history_abbr:
         with st.chat_message(message["role"]):
@@ -55,29 +94,45 @@ def main_page_with_abbr():
         st.chat_message("user").markdown(user_prompt)
         st.session_state.chat_history_abbr.append({"role": "user", "content": user_prompt})
 
-        # Trim conversation history to stay within token limits
-        st.session_state.chat_history_abbr = trim_conversation(st.session_state.chat_history_abbr, max_tokens=1500)
+        # Split the input using a newline as the delimiter
+        input_chunks = split_large_input(user_prompt, delimiter="\n", max_tokens=3000)
 
-        # Send user's message to GPT-3.5-turbo and get a response
+        for chunk in input_chunks:
+            # Add chunk to the conversation and display it
+            st.session_state.chat_history_abbr.append({"role": "user", "content": chunk})
+
+            # Trim conversation history to stay within token limits
+            st.session_state.chat_history_abbr = trim_conversation(st.session_state.chat_history_abbr, max_tokens=4000)
+
+        # Send user's message to GPT-3.5-turbo and get a streamed response
         setup_openai()
         try:
-            response = openai.ChatCompletion.create(
-                model=current_model,
-                messages=[
-                    {"role": "system", "content": "You are an assistant trained to convert academic references into BibTeX format with journal abbreviations."},
-                    *st.session_state.chat_history_abbr
-                ]
-            )
-
-            assistant_response = response.choices[0].message['content']
-            st.session_state.chat_history_abbr.append({"role": "assistant", "content": assistant_response})
-
-            # Display GPT-3.5-turbo's response
             with st.chat_message("assistant"):
-                st.markdown(assistant_response)
+                assistant_message_placeholder = st.empty()
+                assistant_response_stream = ""
 
-            # Save the updated chat history
-            save_history_to_file(st.session_state.chat_history_abbr, history_file)
+                response = openai.ChatCompletion.create(
+                    model=current_model,
+                    messages=[
+                        {"role": "system", "content": "You are an assistant trained to convert academic references into BibTeX format with journal abbreviations."},
+                        *st.session_state.chat_history_abbr
+                    ],
+                    stream=True  # Enable streaming
+                )
+
+                # Stream the response and display it progressively
+                for chunk in response:
+                    if "choices" in chunk:
+                        delta = chunk["choices"][0]["delta"]
+                        if "content" in delta:
+                            assistant_response_stream += delta["content"]
+                            assistant_message_placeholder.markdown(assistant_response_stream)
+
+                # Add the final assistant response to chat history
+                st.session_state.chat_history_abbr.append({"role": "assistant", "content": assistant_response_stream})
+
+                # Save the updated chat history
+                save_history_to_file(st.session_state.chat_history_abbr, history_file)
 
         except openai.error.InvalidRequestError as e:
             st.error(f"Invalid request error: {e}")
