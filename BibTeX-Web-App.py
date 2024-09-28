@@ -5,11 +5,22 @@ import BibTeX_abbr
 import BibTeX_journal_abbr
 import helpful_assistant  # Import the new page
 
+
 # Configure Streamlit page settings as the first command
 st.set_page_config(
     page_title="BiTeX",
     page_icon="🤖"
 )
+
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+
+st.markdown(hide_st_style, unsafe_allow_html=True)
 
 st.sidebar.title("🚦Navigation")
 page = st.sidebar.radio("Go to", ["🌏Main Page", "⚙️Settings", "💥BibTeX with Journal Abbr", "🤝Helpful Assistant"])
