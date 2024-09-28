@@ -61,7 +61,7 @@ def split_large_input(input_text, delimiter="\n", max_tokens=3000):
 
 
 # Function to keep only the last 5 messages in chat history
-def keep_last_n_messages(history, n=20):
+def keep_last_n_messages(history, n=2):
     return history[-n:]
 
 
@@ -81,7 +81,7 @@ def helpful_assistant_page():
 
     # Button to delete all but the last 5 messages
     if st.button("Delete All History Except Last 5"):
-        st.session_state.chat_history_helpful = keep_last_n_messages(st.session_state.chat_history_helpful, 20)
+        st.session_state.chat_history_helpful = keep_last_n_messages(st.session_state.chat_history_helpful, 2)
         save_history_to_file(st.session_state.chat_history_helpful, history_file)
         st.success("Chat history trimmed to the last 5 messages.")
 
