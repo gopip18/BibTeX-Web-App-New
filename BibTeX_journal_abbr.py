@@ -58,7 +58,7 @@ def split_large_input(input_text, delimiter="\n", max_tokens=3000):
     return chunks
 
 # Function to keep only the last 5 messages in chat history
-def keep_last_n_messages(history, n=5):
+def keep_last_n_messages(history, n=20):
     return history[-n:]
 
 def main_page_with_abbr():
