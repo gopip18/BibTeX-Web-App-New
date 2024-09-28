@@ -21,10 +21,14 @@ def load_history_from_file(file_name):
             return json.load(f)
     return []
 
+# Function to delete chat history file
+def delete_history_file(file_name):
+    if os.path.exists(file_name):
+        os.remove(file_name)
+
 # Estimate token count (average approx: 1 word = 1.33 tokens)
 def estimate_token_count(text):
     return len(text.split())
-
 
 # Function to trim the conversation to avoid exceeding token limits
 def trim_conversation(conversation, max_tokens=4000):
@@ -34,7 +38,6 @@ def trim_conversation(conversation, max_tokens=4000):
     while total_tokens > max_tokens and len(trimmed_conversation) > 1:
         total_tokens -= estimate_token_count(trimmed_conversation.pop(0)['content'])
     return trimmed_conversation
-
 
 # Function to split a large input into smaller chunks based on a delimiter
 def split_large_input(input_text, delimiter="\n", max_tokens=3000):
@@ -59,12 +62,6 @@ def split_large_input(input_text, delimiter="\n", max_tokens=3000):
 
     return chunks
 
-
-# Function to keep only the last 5 messages in chat history
-def keep_last_n_messages(history, n=0):
-    return history[-n:]
-
-
 def helpful_assistant_page():
     st.title('🤝 Helpful Assistant')
 
@@ -79,11 +76,11 @@ def helpful_assistant_page():
     if "chat_history_helpful" not in st.session_state:
         st.session_state.chat_history_helpful = load_history_from_file(history_file)
 
-    # Button to delete all but the last 5 messages
+    # Button to delete all history
     if st.button("Delete All History"):
-        st.session_state.chat_history_helpful = keep_last_n_messages(st.session_state.chat_history_helpful, 0)
-        save_history_to_file(st.session_state.chat_history_helpful, history_file)
-        st.success("Chat history trimmed to the last 5 messages.")
+        st.session_state.chat_history_helpful = []
+        delete_history_file(history_file)
+        st.success("All chat history has been deleted.")
 
     # Display chat history
     for message in st.session_state.chat_history_helpful:
